@@ -1,2 +1,4 @@
 flickrapi==2.4.0
 python-telegram-bot==12.7
+Pillow==7.1.2
+numpy

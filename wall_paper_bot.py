@@ -12,6 +12,7 @@ class WallPaperBot:
         self.logger = logging.getLogger('bot')
         self.photo_producer = photo_producer
         self.config = config
+        self.photo_processors = photo_processors
         self.markup = {
             'next_button': [InlineKeyboardButton("Next", callback_data='next')]
         }
@@ -32,7 +33,10 @@ class WallPaperBot:
         keyboard = [self.markup['next_button']]
         chat_id = update.effective_chat.id
         image = self.photo_producer.get_next_photo()
-        context.bot.sendPhoto(chat_id=chat_id, photo=io.BytesIO(image))
+        image = io.BytesIO(image)
+        for processor in self.photo_processors:
+            image = processor.process(image=image)
+        context.bot.sendPhoto(chat_id=chat_id, photo=image)
         update.callback_query.answer()
         context.bot.sendMessage(
             chat_id=chat_id,

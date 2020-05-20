@@ -29,7 +29,7 @@ class FlickrPhotoProducer:
         extras = ','.join('url_{}'.format(size) for size in self._photo_sizes)
         '''flickr не отдает странички с номером больше 100000. Сейчас по тегу industrial примерно 1000000 фото. 
         По этому когда хотим получить фото, а не просто колличество фотографий приходится указывать per_page > 10'''
-        per_page = 100
+        per_page = 300
         page = photo_num // per_page
         photo_num = photo_num % per_page
         resp = self.flickr.photos.search(tags=tag, per_page=per_page, extras=extras, page=page)
