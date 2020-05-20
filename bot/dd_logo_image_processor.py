@@ -1,21 +1,20 @@
 import io
-import logging
 
 from PIL import Image
 
 
 class DDLogoImageProcessor:
-    # соотношение высоты лого к высоте изображения
-    HEIGHT_FACTOR = 0.2
-    WIDTH_FACTOR = 0.6
-    FILL_COLOUR = (180, 180, 180, 180)
+    def __init__(self, cfg):
+        self.height_factor = float(cfg.get('height_factor'))
+        self.width_factor = float(cfg.get('width_factor'))
+        self.filling_colour = tuple(int(num) for num in cfg.get('filling_colour').split(', '))
 
     def process(self, image, **kwargs):
         image = Image.open(image)
         logo = Image.open('logo.png')
         logo = logo.convert('RGBA')
         logo = logo.resize(self._get_new_logo_size(image.size, logo.size), resample=Image.NEAREST)
-        overlay = Image.new('RGBA', (image.size[0], logo.size[1]), self.FILL_COLOUR)
+        overlay = Image.new('RGBA', (image.size[0], logo.size[1]), self.filling_colour)
         image.paste(
             overlay,
             (
@@ -39,7 +38,7 @@ class DDLogoImageProcessor:
 
     def _get_new_logo_size(self, image_size, logo_size):
         factor = max(
-            logo_size[0]/(image_size[0] * self.WIDTH_FACTOR),
-            logo_size[1]/(image_size[1] * self.HEIGHT_FACTOR)
+            logo_size[0]/(image_size[0] * self.width_factor),
+            logo_size[1]/(image_size[1] * self.height_factor)
         )
         return int(logo_size[0] // factor), int(logo_size[1] // factor)
